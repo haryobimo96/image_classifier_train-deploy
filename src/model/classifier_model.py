@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-from src.modules.vgg_base import VGG16NetClassifier
+from src.model.modules.vgg_base import VGG16NetClassifier
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -37,24 +37,24 @@ class ClassifierModel(pl.LightningModule):
             freeze_features = freeze_features,
             num_classes = num_classes
         )
+        self.criterion = torch.nn.CrossEntropyLoss()
         
     def forward(self, x):
         return self.model(x)
 
     def step(self, batch: Any):
         data, target = batch
-        one_hot = F.one_hot(target)
         logits = self.forward(data)
-        predicted_vector = nn.Softmax(logits)
-        loss = F.cross_entropy(one_hot, predicted_vector)
-        return loss, one_hot, predicted_vector
+        loss = self.criterion(logits, target)
+        preds = torch.argmax(logits, dim=1)
+        return loss, preds, target
 
     def training_step(self, batch: Any, batch_idx: int):        
-        loss, one_hot, predicted_vector = self.step(batch)
-        acc = accuracy_score(one_hot, predicted_vector)
-        prec = precision_score(one_hot, predicted_vector, average = 'weighted')
-        rec = recall_score(one_hot, predicted_vector, average = 'weighted')
-        f1 = f1_score(one_hot, predicted_vector, average = 'weighted')
+        loss, preds, target = self.step(batch)
+        acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
 
         self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -69,11 +69,11 @@ class ClassifierModel(pl.LightningModule):
         pass
 
     def validation_step(self, batch: Any, batch_idx: int):
-        loss, one_hot, predicted_vector = self.step(batch)
-        acc = accuracy_score(one_hot, predicted_vector)
-        prec = precision_score(one_hot, predicted_vector, average = 'weighted')
-        rec = recall_score(one_hot, predicted_vector, average = 'weighted')
-        f1 = f1_score(one_hot, predicted_vector, average = 'weighted')
+        loss, preds, target = self.step(batch)
+        acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
 
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -87,11 +87,11 @@ class ClassifierModel(pl.LightningModule):
         pass
         
     def test_step(self, batch: Any, batch_idx: int):
-        loss, one_hot, predicted_vector = self.step(batch)
-        acc = accuracy_score(one_hot, predicted_vector)
-        prec = precision_score(one_hot, predicted_vector, average = 'weighted')
-        rec = recall_score(one_hot, predicted_vector, average = 'weighted')
-        f1 = f1_score(one_hot, predicted_vector, average = 'weighted')
+        loss, preds, target = self.step(batch)
+        acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
 
         self.log("test_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test_acc", acc, on_step=False, on_epoch=True, prog_bar=True)

@@ -1,5 +1,6 @@
 import torch
 import torchvision.models as models
+import torch.nn.functional as F
 from torch import nn
 
 class VGG16NetClassifier(nn.Module):
