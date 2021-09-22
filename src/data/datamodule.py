@@ -53,10 +53,10 @@ class AnimalDataModule(pl.LightningDataModule):
 
         self.TRAIN_TRANSFORM = transforms.Compose(
             [
-                transforms.Resize((224, 224)),,
+                transforms.Resize((224, 224)),
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomVerticalFlip(),
-                transforms.RandomRotation((0, 90))
+                transforms.RandomRotation((0, 90)),
                 transforms.ToTensor(),
             ]
         )
@@ -78,20 +78,20 @@ class AnimalDataModule(pl.LightningDataModule):
         self.data_val_test = ImageFolder(
             root = self.image_dir, transform = self.VAL_TRANSFORM
         )    
-
+        
+        num_train = len(self.data_train)
         train_val_test = tuple(
-            [i * len(self.data_train) for i in self.train_val_test_split]
+            [i * num_train for i in self.train_val_test_split]
         )
 
         valid_size = train_val_test[1]
         test_size = train_val_test[2]
         valid_test_size = valid_size + test_size 
-        num_train = len(self.data_train)
         indices = list(range(num_train))
         np.random.shuffle(indices)
 
-        split = int(np.floor(valid_test_size * num_train))
-        vt_split = int(np.floor(test_size * num_train))
+        split = int(np.floor(valid_size))
+        vt_split = int(np.floor(test_size))
         train_idx, vt_idx = indices[split:], indices[:split]
         val_idx, test_idx = vt_idx[vt_split:], vt_idx[:vt_split]
 
@@ -120,7 +120,7 @@ class AnimalDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset = self.data_val_test,
-            sampler = self.test_sampler
+            sampler = self.test_sampler,
             batch_size = self.batch_size,
             num_workers = self.num_workers,
             pin_memory = self.pin_memory,
