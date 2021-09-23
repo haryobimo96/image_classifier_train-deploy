@@ -1,5 +1,4 @@
-from typing import Any, List
-from omegaconf import DictConfig
+from typing import Any, List, Optional
 import mlflow
 import numpy as np
 import pytorch_lightning as pl
@@ -22,11 +21,11 @@ class ClassifierModel(pl.LightningModule):
         freeze_features : bool,
         num_classes : int,
         optimizer : str,
-        learning_rate : float,
-        beta_1 : float,
-        beta_2 : float,
-        momentum : float,
-        weight_decay : float,
+        learning_rate : Optional[float],
+        beta_1 : Optional[float],
+        beta_2 : Optional[float],
+        momentum : Optional[float],
+        weight_decay : Optional[float],
         **kwargs,
     ):
         super().__init__()
