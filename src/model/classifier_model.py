@@ -51,9 +51,9 @@ class ClassifierModel(pl.LightningModule):
     def training_step(self, batch: Any, batch_idx: int):        
         loss, preds, target = self.step(batch)
         acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
-        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
 
         self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("train_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -70,9 +70,9 @@ class ClassifierModel(pl.LightningModule):
     def validation_step(self, batch: Any, batch_idx: int):
         loss, preds, target = self.step(batch)
         acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
-        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
 
         self.log("val_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("val_acc", acc, on_step=False, on_epoch=True, prog_bar=True)
@@ -88,9 +88,9 @@ class ClassifierModel(pl.LightningModule):
     def test_step(self, batch: Any, batch_idx: int):
         loss, preds, target = self.step(batch)
         acc = accuracy_score(preds.cpu().numpy(), target.cpu().numpy())
-        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
-        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'weighted')
+        prec = precision_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        rec = recall_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
+        f1 = f1_score(preds.cpu().numpy(), target.cpu().numpy(), average = 'micro')
 
         self.log("test_loss", loss, on_step=False, on_epoch=True, prog_bar=True)
         self.log("test_acc", acc, on_step=False, on_epoch=True, prog_bar=True)

@@ -3,3 +3,5 @@ logs
 
 #ignore dataset
 dataset
+
+lightning_logs
