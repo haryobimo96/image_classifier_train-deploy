@@ -6,8 +6,6 @@ ENV SERVER_HOST 0.0.0.0
 ENV ARTIFACT_STORE ${MLFLOW_HOME}/artifactStore
 ENV BACKEND_STORE sqlite:///mlflow.db 
 
-WORKDIR /opt/mlflow/
-
 RUN pip3 install mlflow && \
     mkdir -p ${MLFLOW_HOME}/scripts && \
     mkdir -p ${ARTIFACT_STORE}
