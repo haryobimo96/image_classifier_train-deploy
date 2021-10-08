@@ -4,7 +4,7 @@ from mlflow.entities import ViewType
 from mlflow.tracking import MlflowClient
 
 
-class MLFlowModelConfig:
+class MLFlowConfig:
     def __init__(self, 
         experiment_name: str,
         tracking_uri: str):
@@ -80,7 +80,7 @@ class MLFlowModelConfig:
 
         registered_model_name: str
             Arbitrary string for the new soon to be registered model. If existing registered
-            model name already exists, model will be replaced by the newest version/
+            model name already exists, model will be replaced by the newest version.
         
         """
 
